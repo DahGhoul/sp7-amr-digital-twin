@@ -1,0 +1,6 @@
+{
+  "name": "Gemelo Digital RAM SP-7",
+  "description": "Gemelo Digital Híbrido Regional para la Vigilancia de la Resistencia a los Antimicrobianos con análisis genómico clínico, dispensación farmacéutica y epidemiología en aguas residuales (WBE).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
