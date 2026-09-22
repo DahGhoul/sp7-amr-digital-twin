@@ -1,0 +1,14 @@
+services:
+  gemelo-digital-sp7:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gemelo_digital_sp7
+    ports:
+      - "3005:3000"
+    environment:
+      - PORT=3000
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    env_file:
+      - .env
+    restart: unless-stopped

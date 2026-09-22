@@ -153,7 +153,7 @@ export default function App() {
               </div>
             )}
             <span className="text-zinc-500 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
-              ENGINE: GEMINI 3.7 FLASH
+              ENGINE: GEMINI 3.8 FLASH
             </span>
           </div>
         </div>

@@ -75,7 +75,7 @@ app.get("/api/health", (_req, res) => {
     status: "ok",
     service: "RAM-SP7-Digital-Twin-Core",
     timestamp: new Date().toISOString(),
-    ai_model_target: "gemini-3.7-flash",
+    ai_model_target: "gemini-3.8-flash",
     configured_params: {
       temperature: 0.2,
       topP: 0.95,
@@ -95,20 +95,44 @@ app.post("/api/twin/simulate", async (req, res) => {
 
     const ai = getGeminiClient();
     
-    // Model selection based on guidelines: gemini-3.7-flash for text reasoning
-    const model = "gemini-3.7-flash";
+    // Model selection based on guidelines: gemini-3.8-flash for text reasoning
+    let model = "gemini-3.8-flash";
     const temperature = typeof customTemperature === "number" ? customTemperature : 0.2;
     const topP = typeof customTopP === "number" ? customTopP : 0.95;
 
-    const response = await ai.models.generateContent({
-      model: model,
-      contents: prompt,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION_RAM_SP7,
-        temperature: temperature,
-        topP: topP,
-      },
-    });
+    let response: any = null;
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    while (attempts < maxAttempts) {
+      try {
+        response = await ai.models.generateContent({
+          model: model,
+          contents: prompt,
+          config: {
+            systemInstruction: SYSTEM_INSTRUCTION_RAM_SP7,
+            temperature: temperature,
+            topP: topP,
+          },
+        });
+        break; // Success, exit retry loop
+      } catch (err: any) {
+        attempts++;
+        console.warn(`[Intento ${attempts}] Error con ${model}:`, err.message);
+        
+        // Si el error es 503 (alta demanda), y ya intentamos 2 veces, bajamos al modelo anterior para asegurar la demo
+        if (err.message && err.message.includes("503") && attempts === 2) {
+            console.log("Cambiando a gemini-3.6-flash como plan B debido a alta demanda...");
+            model = "gemini-3.6-flash";
+        }
+        
+        if (attempts >= maxAttempts) {
+            throw err; // Falló permanentemente
+        }
+        // Esperar 2 segundos antes de reintentar
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
 
     const rawOutput = response.text || "";
 
