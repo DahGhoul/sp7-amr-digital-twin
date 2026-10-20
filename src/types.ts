@@ -6,6 +6,7 @@ export interface ClinicalTelemetry {
   lineageST: string;
   setting: string;
   notes?: string;
+  plainExplanation?: string;
 }
 
 export interface PrescriptionTelemetry {
@@ -15,6 +16,7 @@ export interface PrescriptionTelemetry {
     targetContext: string;
     status: "normal" | "elevated" | "critical";
   }>;
+  plainExplanation?: string;
 }
 
 export interface WbeTelemetry {
@@ -27,18 +29,24 @@ export interface WbeTelemetry {
   residualConcentrationNgL: number;
   pnecSelectiveThresholdNgL: number;
   hypervirulentLineageDetected?: string;
+  plainExplanation?: string;
 }
 
 export interface RegionalScenario {
   id: string;
   title: string;
+  shortTitle: string;
   subtitle: string;
+  plainSummary: string;
   region: string;
   population: number;
   category: "subreporte_wbe" | "sobreprescripcion" | "escape_clonal" | "custom";
   clinical: ClinicalTelemetry;
   prescription: PrescriptionTelemetry;
   wbe: WbeTelemetry;
+  proaActionSummary: string;
+  sedalibActionSummary: string;
+  earlyWarningDays: number;
   rawPrompt: string;
 }
 
